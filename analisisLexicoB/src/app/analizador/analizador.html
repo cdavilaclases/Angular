@@ -1,0 +1,45 @@
+<mat-form-field style="width: 100%;height: 200px;">
+
+    <mat-label>Texto</mat-label>
+    <textarea matInput [(ngModel)] = "codigo"></textarea>
+</mat-form-field>
+
+<br>
+ <button matButton="filled" (click)="tokenizar()">Analizar</button>
+
+ <table>
+    <thead>
+        <tr>
+            <th>
+                Token
+            </th>
+            <th>
+                Lexema
+            </th>
+            <th>
+                Fila
+            </th>
+            <th>
+                Columna
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(d of dataSource; track d.token){
+            <tr>
+                <td>
+                    {{d.token}}
+                </td>
+                <td>
+                    {{d.lexema}}
+                </td>
+                <td>
+                    {{d.fila}}
+                </td>
+                <td>
+                    {{d.columna}}
+                </td>
+            </tr>
+        }
+    </tbody>
+ </table>
