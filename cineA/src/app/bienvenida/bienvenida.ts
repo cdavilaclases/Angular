@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,9 @@ export class Bienvenida {
   formulario:FormGroup;
   usuarios:any = [];
 
-  constructor(http:HttpClient,private fb: FormBuilder){
+  constructor(http:HttpClient,
+    private fb: FormBuilder,
+  private cdr:ChangeDetectorRef){
 
     this.htpp= http;
     this.formulario = this.fb.group(
@@ -36,7 +38,10 @@ export class Bienvenida {
   buscarUsuarios(){
     this.htpp.get("http://localhost:8080/usuario/buscar"
       ).subscribe(
-      data => this.usuarios=data
+      data => {
+          this.usuarios=data;
+          this.cdr.detectChanges();
+      }
     )
   }
 
@@ -63,6 +68,10 @@ export class Bienvenida {
     else{
       alert("Error en el servidor")
     }
+  }
+
+  verTelefonos(usuario:any){
+    location.href= "/telefonos/"+usuario.idusuario;
   }
 
 }
