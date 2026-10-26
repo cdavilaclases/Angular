@@ -13,36 +13,67 @@ export class Parser2 {
   compileGrammar() {
     const grammar = `
 {
-//Funciones de JS
+ let estructuras = [];
 }
 
-/*
-Los guiones bajos _ representan caracteres en blanco o comentarios
-La expresion regular se encuentra programada al final 
-de la gramatica ambos se deben de ignorar.
-*/
-S = _ Clase _
+INICIO = SENTENCIAS {
+    
+    return estructuras;
+}
 
-Clase = "public" _ "class" _ Identificador _ "{" DefinicionClase "}"
+SENTENCIAS = _ SENTENCIA _ SENTENCIAS
+          /_ SENTENCIA _
 
 
-//Solo recursividad por la derecha  
-DefinicionClase = _ DeclaracionVariable _ DefinicionClase
-                / _ DeclaracionVariable _
+SENTENCIA = "STACK" _ nom:Identificador _ ";" {
+      let estructura = {};
+      estructura.nombre = nom;
+      estructura.tipo = "PILA";
+      estructura.valores = [];
+      estructura.graficar = false;
+      estructuras.push(estructura);
+}
+            / "PUSH" _ "(" _ nom:Identificador _ "," _ val:VALOR _ ")" _ ";"{
+              for(let estructura of estructuras){
+                if(estructura.nombre == nom){
+                  estructura.valores.push(val);
+                }
+              }
+            }
+            / "POP" _ "(" _ nom:Identificador ")" _ ";"{
+              for(let estructura of estructuras){
+                if(estructura.nombre == nom){
+                  estructura.valores.pop();
+                }
+              }
+            }
+            / "GRAPH" _ "(" _ nom:Identificador ")" _ ";"{
+              for(let estructura of estructuras){
+                if(estructura.nombre == nom){
+                  estructura.graficar = true;
+                }
+              }
+            }  
 
-DeclaracionVariable = Tipo _ Identificador _ ";"
-
-Tipo = "int"
-    / "char"
-    / "double"
-    / "boolean"
-    / "float"
-    / "long"
-    / "short"
-    / "byte"
+VALOR = num:numero{
+    return num;
+}
+      / cad:cadena {
+        return cad;
+      }
 
 //Expresiones regulares
-Identificador = [a-zA-Z_] [a-zA-Z0-9_]*
+Identificador = a:[a-zA-Z_] b:[a-zA-Z0-9_]* {
+    return a + b.join("");
+}
+
+numero = c:[0-9]+ {
+    return c.join("");
+} 
+
+cadena = "\\"" c:[^\\"]* "\\"" {
+    return c.join("");
+}
 
 // Ignora espacios y comentarios
 _ = (Blancos / Comentario)*

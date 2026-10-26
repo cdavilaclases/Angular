@@ -10,40 +10,54 @@ export class Parser2 {
     this.compileGrammar();
   }
 
+
+  
   compileGrammar() {
+
+    
     const grammar = `
-{
-//Funciones de JS
-}
 
-/*
-Los guiones bajos _ representan caracteres en blanco o comentarios
-La expresion regular se encuentra programada al final 
-de la gramatica ambos se deben de ignorar.
-*/
-S = _ Clase _
-
-Clase = "public" _ "class" _ Identificador _ "{" DefinicionClase "}"
+    {
+      let estructuras = [];
 
 
-//Solo recursividad por la derecha  
-DefinicionClase = _ DeclaracionVariable _ DefinicionClase
-                / _ DeclaracionVariable _
 
-DeclaracionVariable = Tipo _ Identificador _ ";"
+    }
 
-Tipo = "int"
-    / "char"
-    / "double"
-    / "boolean"
-    / "float"
-    / "long"
-    / "short"
-    / "byte"
+    INICIO = SENTENCIAS {
+      console.log(estructuras);
+    }
 
+    SENTENCIAS = _ SENTENCIA _ SENTENCIAS
+              /_ SENTENCIA _
+
+    SENTENCIA = "STACK" _ nom:Identificador _ ";" {
+                let nuevo = {};
+                nuevo.nombre = nom;
+                nuevo.tipo = "PILA";
+                nuevo.valores = [];
+                estructuras.push(nuevo);
+            }
+              /"QUEUE" _ Identificador _ ";"
+              /"PUSH" _ "(" _ nom:Identificador _ "," _ n:VALOR _ ")" _ ";"{
+                  for(let l of estructuras){
+                    if(l.nombre == nom){
+                      l.valores.push(n);
+                    }
+                  }
+              }
+
+              /"POP" _ "(" _ Identificador _ ")" _ ";"
+                     
+    
+     VALOR = n:numero{ return n; } 
+             /texto         
 //Expresiones regulares
-Identificador = [a-zA-Z_] [a-zA-Z0-9_]*
-
+Identificador = primero:[a-zA-Z_] segundo:[a-zA-Z0-9_]* {
+    return primero + segundo.join("");
+}
+numero = n:[0-9]+ { return n; }
+texto = "\\"" [^\\"]* "\\""
 // Ignora espacios y comentarios
 _ = (Blancos / Comentario)*
 

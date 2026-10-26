@@ -4,9 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { TipoUsuarioPipe } from '../tipo-usuario-pipe';
 
 @Component({
-  imports: [ReactiveFormsModule,FormsModule,CommonModule],
+  imports: [ReactiveFormsModule,FormsModule,CommonModule, TipoUsuarioPipe],
   selector: 'app-bienvenida',
   styleUrl: './bienvenida.css',
   templateUrl: './bienvenida.html',
@@ -17,6 +18,8 @@ export class Bienvenida {
   formulario:FormGroup;
   usuarios:any = [];
 
+  tipos:any = [];
+
   constructor(http:HttpClient,
     private fb: FormBuilder,
   private cdr:ChangeDetectorRef){
@@ -26,12 +29,14 @@ export class Bienvenida {
       {
         email:['',[Validators.required, Validators.email]],
         password:['',Validators.required],
-        nombre:['',Validators.required]
+        nombre:['',Validators.required],
+        tipo:['',Validators.required]
 
       }
 
     );
     this.buscarUsuarios();
+    this.buscarTipos();
 
   }
 
@@ -40,6 +45,16 @@ export class Bienvenida {
       ).subscribe(
       data => {
           this.usuarios=data;
+          this.cdr.detectChanges();
+      }
+    )
+  }
+
+  buscarTipos(){
+    this.htpp.get("http://localhost:8080/tipo/buscar"
+      ).subscribe(
+      data => {
+          this.tipos=data;
           this.cdr.detectChanges();
       }
     )

@@ -22,6 +22,17 @@
     }
 
     <br><br>
+    <label>Tipo:</label>
+    <select type="text" formControlName="tipo">
+        @for(tipo of tipos;track tipo.idtipoUsuario ){
+            <option value="{{tipo.idtipoUsuario}}">{{tipo.descripcion}}</option>
+        }
+    </select>
+    @if(formulario.get('tipo')?.invalid 
+    && formulario.get('tipo')?.touched){
+        <div> El tipo es obligatorio</div>
+    }
+    <br><br>
     <button type = "submit">Ingresar</button>
 
 </form>
@@ -33,6 +44,7 @@
         <th>Nombre</th>
         <th>Email</th>
         <th>Password</th>
+        <th>Tipo</th>
         <th>Fecha creacion</th>
         <th>Acciones</th>
     </thead>
@@ -43,6 +55,7 @@
             <td>{{usuario.nombre}}</td>
             <td>{{usuario.email}}</td>
             <td>{{usuario.password}}</td>
+            <td>{{usuario.tipo | tipoUsuario :tipos}}</td>
             <td>{{usuario.fechaCreacion | date}}</td>
             <td><button (click)="verTelefonos(usuario)">Ver telefonos</button></td>
         </tr>
